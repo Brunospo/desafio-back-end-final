@@ -1,0 +1,35 @@
+{
+  "name": "desafio-backend-final-dbe-t01",
+  "version": "1.0.0",
+  "description": "![](https://i.imgur.com/xG74tOh.png)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BkvrPedro/desafio-backend-final-dbe-t01.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BkvrPedro/desafio-backend-final-dbe-t01/issues"
+  },
+  "homepage": "https://github.com/BkvrPedro/desafio-backend-final-dbe-t01#readme",
+  "devDependencies": {
+    "eslint": "^8.20.0",
+    "nodemon": "^2.0.19"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^2.2.0",
+    "nodemailer": "^6.7.7",
+    "pg": "^8.7.3",
+    "yup": "^0.32.11",
+    "yup-locales": "^1.2.10"
+  }
+}
