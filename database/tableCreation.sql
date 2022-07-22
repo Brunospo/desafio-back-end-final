@@ -1,0 +1,19 @@
+DROP DATABASE IF EXISTS pdv;
+
+CREATE DATABASE pdv;
+
+DROP TABLE IF EXISTS usuarios;
+
+CREATE TABLE usuarios(
+	id SERIAL PRIMARY KEY,
+  nome VARCHAR(60) NOT NULL,
+  email TEXT NOT NULL UNIQUE,
+  senha TEXT NOT NULL
+);
+
+DROP TABLE IF EXISTS categorias;
+
+CREATE TABLE categorias(
+	id SERIAL PRIMARY KEY,
+  descricao TEXT NOT NULL
+);
