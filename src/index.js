@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const categoryRouter = require('./router/categoryRouter');
 const userRouter = require('./router/userRouter');
+const authenticationRouter = require('./router/authenticationRouter');
 
 const app = express();
 
@@ -13,6 +14,6 @@ app.use(cors());
 
 app.use('/categoria', categoryRouter);
 app.use('/usuario', userRouter);
-
+app.use('/login', authenticationRouter);
 
 app.listen(process.env.PORT); //eslint-disable-line

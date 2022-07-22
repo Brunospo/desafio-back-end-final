@@ -7,9 +7,9 @@ const validateBodyRegister = async (req, res, next) => {
 	try {
 		await validateUserFields.validate({...req.body});
 
-		const [ hasEmail ] = await knex('usuarios').where({email});
+		const existisEmail = await knex.select('email').from('usuarios').where({email}).first();
 
-		if (hasEmail) {
+		if (existisEmail) {
 			return res.status(400).json({message: 'Email já cadastrado'});
 		}
 	} catch (error) {

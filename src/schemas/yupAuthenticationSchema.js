@@ -1,9 +1,8 @@
 const yup = require('../config/yup');
 
-const validateUserFields = yup.object().shape({
-	nome: yup.string().required(),
+const validateAuthenticationFields = yup.object().shape({
 	email: yup.string().email('Formato de email inválido').required(),
 	senha: yup.string().required()
 });
 
-module.exports = validateUserFields;
+module.exports = validateAuthenticationFields;
