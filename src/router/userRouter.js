@@ -1,9 +1,10 @@
 const { Router } = require('express');
-const { registerUser } = require('../controllers/userController');
-const { validateBodyRegister } = require('../middlewares/userMiddleware');
+const { registerUser, editPassword } = require('../controllers/userController');
+const { validateBodyRegister, validateBodyEditPassword } = require('../middlewares/userMiddleware');
 
 const router = Router();
 
 router.post('/', validateBodyRegister, registerUser);
+router.patch('/redefinir', validateBodyEditPassword, editPassword);
 
 module.exports = router;
