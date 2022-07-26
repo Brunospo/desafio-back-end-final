@@ -21,7 +21,7 @@ const validateBodyRegister = async (req, res, next) => {
 };
 
 const validateBodyEditPassword = async (req, res, next) => {
-	const { email, senha_antiga } = req.body;
+	const { email, senha_antiga, senha_nova } = req.body;
 
 	try {
 		await validateEditPassword.validate({ ...req.body });
@@ -32,12 +32,16 @@ const validateBodyEditPassword = async (req, res, next) => {
 			return res.status(400).json({ message: 'Email não cadastrado' });
 		}
 
-		if (!isCorrectPassword(senha_antiga, user.senha)) {
+		const verifyOldPassword = await isCorrectPassword(senha_antiga, user.senha);
+
+		if (verifyOldPassword === false) {
 			return res.status(400).json({ message: 'Senha antiga incorreta' });
 		}
 
-		if (isCorrectPassword(senha_antiga, user.senha)) {
-			return res.status(400).json({ message: 'Nova senha deve ser diferente da antiga' });
+		const verifyNewPassword = await isCorrectPassword(senha_nova, user.senha);
+
+		if (verifyNewPassword === true) {
+			return res.status(400).json({ message: 'A nova senha deve ser diferente da senha antiga' });
 		}
 
 	} catch (error) {

@@ -1,6 +1,7 @@
 /* eslint-disable linebreak-style */
 const { encryptPassword } = require('../utils/bcrypt');
 const knex = require('../config/knexConnection');
+const transporter = require('../config/nodemailer');
 
 const registerUser = async (req, res) => {
 	const { nome, email, senha } = req.body;
@@ -24,12 +25,27 @@ const editPassword = async (req, res) => {
 
 		await knex('usuarios').where({ email }).update({ senha: encryptedPassword });
 
-		return res.status(200).json({ message: 'Senha alterada com sucesso' });
+		const dataSend = {
+			from: 'suporte@desafiofinalcubos.com',
+			to: email,
+			subject: 'Password changed',
+			text: 'Your password has been changed successfully'
+		};
 
+		transporter.sendMail(dataSend, (error) => {
+			if (error) {
+				return res.json({ message: error.message });
+			} else {
+				return console.json();
+			}
+		});
+
+		return res.status(200).json({ message: 'Senha alterada com sucesso' });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}
 };
+
 
 
 module.exports = {
