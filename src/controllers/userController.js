@@ -1,6 +1,6 @@
 const { encryptPassword } = require('../utils/bcrypt');
 const knex = require('../config/knexConnection');
-const transporter = require('../config/nodemailer');
+const sgMail = require('../config/sendgrid');
 
 const registerUser = async (req, res) => {
 	const { nome, email, senha } = req.body;
@@ -19,25 +19,19 @@ const registerUser = async (req, res) => {
 const editPassword = async (req, res) => {
 	const { email, senha_nova } = req.body;
 
+	const msg = {
+		to: email,
+		from: process.env.SENDGRID_EMAIL, //eslint-disable-line
+		subject: '🚨 Alerta de segurança',
+		text: 'A senha da sua Conta do PDV foi alterada!'
+	};
+
 	try {
 		const encryptedPassword = await encryptPassword(senha_nova);
 
 		await knex('usuarios').where({ email }).update({ senha: encryptedPassword });
 
-		const dataSend = {
-			from: 'suporte@desafiofinalcubos.com',
-			to: email,
-			subject: 'Password changed',
-			text: 'Your password has been changed successfully'
-		};
-
-		transporter.sendMail(dataSend, (error) => {
-			if (error) {
-				return res.json({ message: error.message });
-			} else {
-				return console.json();
-			}
-		});
+		await sgMail.send(msg);
 
 		return res.status(200).json({ message: 'Senha alterada com sucesso' });
 	} catch (error) {
