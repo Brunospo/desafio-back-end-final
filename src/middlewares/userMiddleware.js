@@ -3,7 +3,7 @@ const { isCorrectPassword } = require('../utils/bcrypt');
 
 const { validateUserFields, validateEditPasswordFields } = require('../schemas/yupUserSchema');
 
-const validateBodyRegister = async (req, res, next) => {
+const validateBodyFields = async (req, res, next) => {
 	const { email } = req.body;
 
 	try {
@@ -51,6 +51,6 @@ const validateBodyEditPassword = async (req, res, next) => {
 };
 
 module.exports = {
-	validateBodyRegister,
+	validateBodyFields,
 	validateBodyEditPassword
 };

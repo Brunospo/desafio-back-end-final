@@ -43,8 +43,23 @@ const userDetails = async (req, res) => {
 	return res.status(200).json({ usuario: { ...req.usuario } });
 };
 
+const updateUser = async (req, res) => {
+	const { nome, email, senha } = req.body;
+
+	try {
+		const encryptedPassword = await encryptPassword(senha);
+
+		const [user] = await knex('usuarios').update({ nome, email, senha: encryptedPassword }).where({ id: req.usuario.id }).returning(['id', 'nome', 'email']);
+
+		return res.status(201).json({ usuario: user });
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
 module.exports = {
 	registerUser,
 	editPassword,
-	userDetails
+	userDetails,
+	updateUser
 };	
