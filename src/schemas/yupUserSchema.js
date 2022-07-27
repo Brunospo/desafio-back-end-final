@@ -6,7 +6,7 @@ const validateUserFields = yup.object().shape({
 	senha: yup.string().required()
 });
 
-const validateEditPassword = yup.object().shape({
+const validateEditPasswordFields = yup.object().shape({
 	email: yup.string().email('Formato de email inválido').required(),
 	senha_antiga: yup.string().required(),
 	senha_nova: yup.string().required()
@@ -15,5 +15,5 @@ const validateEditPassword = yup.object().shape({
 
 module.exports = {
 	validateUserFields,
-	validateEditPassword
+	validateEditPasswordFields
 };

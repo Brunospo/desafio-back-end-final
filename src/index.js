@@ -16,6 +16,4 @@ app.use('/categoria', categoryRouter);
 app.use('/usuario', userRouter);
 app.use('/login', authenticationRouter);
 
-const port = process.env.PORT || 3000; //eslint-disable-line
-
-app.listen(port, () => { console.log('Servidor rodando') });; //eslint-disable-line
+app.listen(process.env.PORT, () => { console.log('Servidor rodando') });; //eslint-disable-line

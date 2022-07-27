@@ -1,4 +1,3 @@
-/* eslint-disable linebreak-style */
 const { encryptPassword } = require('../utils/bcrypt');
 const knex = require('../config/knexConnection');
 const transporter = require('../config/nodemailer');
@@ -47,14 +46,7 @@ const editPassword = async (req, res) => {
 };
 
 const userDetails = async (req, res) => {
-
-	try {
-		const { id, nome, email } = req.usuario;
-
-		return res.status(200).json({ usuario: { id, nome, email } });
-	} catch (error) {
-		return res.status(500).json({ message: error.message });
-	}
+	return res.status(200).json({ usuario: { ...req.usuario } });
 };
 
 module.exports = {

@@ -1,6 +1,7 @@
-const { validateUserFields, validateEditPassword } = require('../schemas/yupUserSchema');
 const knex = require('../config/knexConnection');
 const { isCorrectPassword } = require('../utils/bcrypt');
+
+const { validateUserFields, validateEditPasswordFields } = require('../schemas/yupUserSchema');
 
 const validateBodyRegister = async (req, res, next) => {
 	const { email } = req.body;
@@ -24,23 +25,21 @@ const validateBodyEditPassword = async (req, res, next) => {
 	const { email, senha_antiga, senha_nova } = req.body;
 
 	try {
-		await validateEditPassword.validate({ ...req.body });
+		await validateEditPasswordFields.validate({ ...req.body });
 
 		const user = await knex.select('email', 'senha').from('usuarios').where({ email }).first();
 
 		if (!user) {
-			return res.status(400).json({ message: 'Email não cadastrado' });
+			return res.status(400).json({ message: 'Email e/ou senha inválido(s).' });
 		}
 
-		const verifyOldPassword = await isCorrectPassword(senha_antiga, user.senha);
+		const correctOldPassword = await isCorrectPassword(senha_antiga, user.senha);
 
-		if (verifyOldPassword === false) {
-			return res.status(400).json({ message: 'Senha antiga incorreta' });
+		if (!correctOldPassword) {
+			return res.status(400).json({ message: 'Email e/ou senha inválido(s).' });
 		}
 
-		const verifyNewPassword = await isCorrectPassword(senha_nova, user.senha);
-
-		if (verifyNewPassword === true) {
+		if (correctOldPassword && (senha_antiga === senha_nova)) {
 			return res.status(400).json({ message: 'A nova senha deve ser diferente da senha antiga' });
 		}
 
