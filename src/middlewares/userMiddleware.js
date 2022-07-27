@@ -15,6 +15,10 @@ const validateBodyFields = async (req, res, next) => {
 			return res.status(400).json({ message: 'Email já cadastrado' });
 		}
 	} catch (error) {
+		if (error.name === 'ValidationError'){
+			return res.status(400).json({ message: error.message });
+		}
+
 		return res.status(500).json({ message: error.message });
 	}
 
@@ -22,7 +26,7 @@ const validateBodyFields = async (req, res, next) => {
 };
 
 const validateBodyEditPassword = async (req, res, next) => {
-	const { email, senha_antiga, senha_nova } = req.body;
+	const { email, senha_antiga } = req.body;
 
 	try {
 		await validateEditPasswordFields.validate({ ...req.body });
@@ -39,11 +43,11 @@ const validateBodyEditPassword = async (req, res, next) => {
 			return res.status(400).json({ message: 'Email e/ou senha inválido(s).' });
 		}
 
-		if (correctOldPassword && (senha_antiga === senha_nova)) {
-			return res.status(400).json({ message: 'A nova senha deve ser diferente da senha antiga' });
+	} catch (error) {
+		if (error.name === 'ValidationError'){
+			return res.status(400).json({ message: error.message });
 		}
 
-	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}
 

@@ -24,6 +24,10 @@ const validateToken = async (req, res, next) => {
 
 		next();
 	} catch (error) {
+		if(error.name === 'JsonWebTokenError') {
+			return await res.status(403).json({message: 'JWT error: ' + error.message});
+		}
+
 		return await res.status(500).json({message: error.message});
 	}
 };

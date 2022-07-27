@@ -31,9 +31,9 @@ const editPassword = async (req, res) => {
 
 		await knex('usuarios').where({ email }).update({ senha: encryptedPassword });
 
-		await sgMail.send(msg);
+		res.status(200).json({ message: 'Senha alterada com sucesso' });
 
-		return res.status(200).json({ message: 'Senha alterada com sucesso' });
+		await sgMail.send(msg);
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}

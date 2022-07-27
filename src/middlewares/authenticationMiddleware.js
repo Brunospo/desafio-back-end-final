@@ -23,6 +23,10 @@ const validateBodyAuthentication = async (req, res, next) => {
 		req.user = { id: user.id, nome: user.nome, email: user.email };
 
 	} catch (error) {
+		if (error.name === 'ValidationError'){
+			return res.status(400).json({ message: error.message });
+		}
+		
 		return res.status(500).json({ message: error.message });
 	}
 
