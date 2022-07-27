@@ -46,9 +46,19 @@ const editPassword = async (req, res) => {
 	}
 };
 
+const userDetails = async (req, res) => {
 
+	try {
+		const { id, nome, email } = req.usuario;
+
+		return res.status(200).json({ usuario: { id, nome, email } });
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
 
 module.exports = {
 	registerUser,
-	editPassword
+	editPassword,
+	userDetails
 };	
