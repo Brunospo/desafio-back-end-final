@@ -54,7 +54,7 @@ const validateBodyEditPassword = async (req, res, next) => {
 	next();
 };
 
-const validateBodyUpdateUser = async (req, res, next) => {
+const validateBodyUpdate = async (req, res, next) => {
 	const { email } = req.body;
 	const { email: oldEmail} = req.usuario;
 
@@ -82,5 +82,5 @@ const validateBodyUpdateUser = async (req, res, next) => {
 module.exports = {
 	validateBodyRegister,
 	validateBodyEditPassword,
-	validateBodyUpdateUser
+	validateBodyUpdate
 };
