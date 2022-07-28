@@ -3,7 +3,7 @@ const { isCorrectPassword } = require('../utils/bcrypt');
 
 const { validateUserFields, validateEditPasswordFields } = require('../schemas/yupUserSchema');
 
-const validateBodyFields = async (req, res, next) => {
+const validateBodyRegister = async (req, res, next) => {
 	const { email } = req.body;
 
 	try {
@@ -54,7 +54,33 @@ const validateBodyEditPassword = async (req, res, next) => {
 	next();
 };
 
+const validateBodyUpdateUser = async (req, res, next) => {
+	const { email } = req.body;
+	const { email: oldEmail} = req.usuario;
+
+	try {
+		await validateUserFields.validate({ ...req.body });
+
+		if (email !== oldEmail) {
+			const existisEmail = await knex.select('email').from('usuarios').where({ email }).first();
+
+			if (existisEmail) {
+				return res.status(400).json({ message: 'Email já cadastrado' });
+			}
+		}
+	} catch (error) {
+		if (error.name === 'ValidationError'){
+			return res.status(400).json({ message: error.message });
+		}
+
+		return res.status(500).json({ message: error.message });
+	}
+
+	next();
+};
+
 module.exports = {
-	validateBodyFields,
-	validateBodyEditPassword
+	validateBodyRegister,
+	validateBodyEditPassword,
+	validateBodyUpdateUser
 };
