@@ -42,7 +42,19 @@ const listProduct = async (req, res) => {
 		}
 		
 		return res.json({'produto(s)': product});
-		
+
+	} catch (error) {
+		return res.status(500).json({message: error.message});
+	}
+};
+
+const detailProduct = async (req, res) => {
+	const { id } = req.params;	
+
+	try {
+		const product = await knex('produtos').where({id}).first();
+
+		return res.json({produto: product});
 	} catch (error) {
 		return res.status(500).json({message: error.message});
 	}
@@ -51,5 +63,6 @@ const listProduct = async (req, res) => {
 module.exports = {
 	registerProduct,
 	editProduct,
-	listProduct
+	listProduct,
+	detailProduct
 };
