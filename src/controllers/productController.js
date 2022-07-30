@@ -25,7 +25,31 @@ const editProduct = async (req, res) => {
 	}
 };
 
+const listProduct = async (req, res) => {
+	const { categoria_id } = req.query;
+
+	try {
+		const querryListProduct = knex('produtos');
+
+		if (categoria_id) {
+			querryListProduct.where({id: categoria_id}).first();
+		}
+
+		const product = await querryListProduct;
+
+		if (!product) {
+			return res.status(404).json({message: 'Esse produto não existe'});
+		}
+		
+		return res.json({'produto(s)': product});
+		
+	} catch (error) {
+		return res.status(500).json({message: error.message});
+	}
+};
+
 module.exports = {
 	registerProduct,
-	editProduct
+	editProduct,
+	listProduct
 };
