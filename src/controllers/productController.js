@@ -55,6 +55,22 @@ const detailProduct = async (req, res) => {
 		const product = await knex('produtos').where({id}).first();
 
 		return res.json({produto: product});
+
+	} catch (error) {
+		return res.status(500).json({message: error.message});
+	}
+};
+
+const deleteProduct = async (req, res) => {
+	const { id } = req.params;	
+
+	try {
+		const deletedProduct = await knex('produtos').del().where({id});
+
+		if (deletedProduct) {
+			return res.json({message: 'Produto deletado com sucesso'});
+		}
+
 	} catch (error) {
 		return res.status(500).json({message: error.message});
 	}
@@ -64,5 +80,6 @@ module.exports = {
 	registerProduct,
 	editProduct,
 	listProduct,
-	detailProduct
+	detailProduct,
+	deleteProduct
 };
