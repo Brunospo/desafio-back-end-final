@@ -17,7 +17,7 @@ const editProduct = async (req, res) => {
 	const { descricao, quantidade_estoque, valor, categoria_id } = req.body;
 
 	try {
-		const updatedProduct = await knex('produtos').update({ descricao, quantidade_estoque, valor, categoria_id }).where({id}).returning('*');
+		const [ updatedProduct ] = await knex('produtos').update({ descricao, quantidade_estoque, valor, categoria_id }).where({id}).returning('*');
 		
 		return res.json({produto: updatedProduct});		
 	} catch (error) {
@@ -65,11 +65,9 @@ const deleteProduct = async (req, res) => {
 	const { id } = req.params;	
 
 	try {
-		const deletedProduct = await knex('produtos').del().where({id});
+		await knex('produtos').del().where({id});
 
-		if (deletedProduct) {
-			return res.json({message: 'Produto deletado com sucesso'});
-		}
+		return res.json({message: 'Produto deletado com sucesso'});
 
 	} catch (error) {
 		return res.status(500).json({message: error.message});
