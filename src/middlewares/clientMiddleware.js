@@ -14,11 +14,11 @@ const validateBodyClient = async (req, res, next) => {
 
         if (existisEmail) {
             return res.status(400).json({ message: 'Email já cadastrado' });
-        };
+        }
 
         if (existisCPF) {
             return res.status(400).json({ message: 'CPF já cadastrado' });
-        };
+        }
 
 
     } catch (error) {

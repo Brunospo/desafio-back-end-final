@@ -11,4 +11,4 @@ router.put('/:id', validateClientID, updateClient);
 router.get('/', listClient);
 router.get('/:id', detailClient);
 
-module.exports = router
+module.exports = router;
