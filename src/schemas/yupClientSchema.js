@@ -7,7 +7,7 @@ const validateClientFields = yup.object().shape({
     cpf: yup.string().required().length(11),
     cep: yup.string().length(8),
     rua: yup.string(),
-    numero: yup.string(),
+    numero: yup.number().integer('O numero deve ser um inteiro').positive(),
     bairro: yup.string(),
     cidade: yup.string(),
     estado: yup.string().length(2)
