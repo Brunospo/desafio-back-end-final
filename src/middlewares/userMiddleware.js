@@ -15,7 +15,7 @@ const validateBodyRegister = async (req, res, next) => {
 			return res.status(400).json({ message: 'Email já cadastrado' });
 		}
 	} catch (error) {
-		if (error.name === 'ValidationError'){
+		if (error.name === 'ValidationError') {
 			return res.status(400).json({ message: error.message });
 		}
 
@@ -44,7 +44,7 @@ const validateBodyEditPassword = async (req, res, next) => {
 		}
 
 	} catch (error) {
-		if (error.name === 'ValidationError'){
+		if (error.name === 'ValidationError') {
 			return res.status(400).json({ message: error.message });
 		}
 
@@ -56,7 +56,7 @@ const validateBodyEditPassword = async (req, res, next) => {
 
 const validateBodyUpdate = async (req, res, next) => {
 	const { email } = req.body;
-	const { email: oldEmail} = req.usuario;
+	const { email: oldEmail } = req.usuario;
 
 	try {
 		await validateUserFields.validate({ ...req.body });
@@ -69,7 +69,7 @@ const validateBodyUpdate = async (req, res, next) => {
 			}
 		}
 	} catch (error) {
-		if (error.name === 'ValidationError'){
+		if (error.name === 'ValidationError') {
 			return res.status(400).json({ message: error.message });
 		}
 
