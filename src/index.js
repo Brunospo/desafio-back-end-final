@@ -23,6 +23,7 @@ app.use('/login', authenticationRouter);
 app.use('/produto', productRouter);
 app.use('/cliente', clientRouter);
 
+//Catch all
 app.use(errorMiddleware);
 
 app.listen(process.env.PORT, () => { console.log('Servidor rodando') });; //eslint-disable-line
