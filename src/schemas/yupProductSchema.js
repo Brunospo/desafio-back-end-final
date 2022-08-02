@@ -7,6 +7,11 @@ const validateRegisterFields = yup.object().shape({
 	categoria_id: yup.number().positive().integer('categoria_id deve receber um número inteiro').required()
 });
 
+const validateIdtype = yup.object().shape({
+	id: yup.number().positive().integer()
+});
+
 module.exports = {
-	validateRegisterFields
+	validateRegisterFields,
+	validateIdtype
 };

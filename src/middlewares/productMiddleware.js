@@ -1,4 +1,4 @@
-const { validateRegisterFields } = require('../schemas/yupProductSchema');
+const { validateRegisterFields, validateIdtype } = require('../schemas/yupProductSchema');
 const knex = require('../config/knexConnection');
 
 const validateBodyFields = async (req, res, next) => {
@@ -28,6 +28,8 @@ const validateProductId = async (req, res, next) => {
 	const { id } = req.params;
 
 	try {
+		await validateIdtype.validate({id});
+
 		const existsProduct = await knex('produtos').where({id}).first();
 		
 		if (!existsProduct) {
@@ -35,6 +37,11 @@ const validateProductId = async (req, res, next) => {
 		}
 
 	} catch (error) {
+
+		if (error.name === 'ValidationError'){
+			return res.status(400).json({ message: error.message });
+		}
+		
 		return res.status(500).json({message: error.message});
 	}
 

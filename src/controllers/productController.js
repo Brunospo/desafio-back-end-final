@@ -1,4 +1,5 @@
 const knex = require('../config/knexConnection');
+const { validateIdtype } = require('../schemas/yupProductSchema');
 
 const registerProduct = async (req, res) => {
 	const { descricao, quantidade_estoque, valor, categoria_id } = req.body;
@@ -26,13 +27,15 @@ const editProduct = async (req, res) => {
 };
 
 const listProduct = async (req, res) => {
-	const { categoria_id } = req.query;
+	const { categoria_id: id } = req.query;
 
 	try {
 		const querryListProduct = knex('produtos');
 
-		if (categoria_id) {
-			querryListProduct.where({id: categoria_id}).first();
+		if (id) {
+			await validateIdtype.validate({id});
+			
+			querryListProduct.where({id}).first();
 		}
 
 		const product = await querryListProduct;
@@ -44,6 +47,11 @@ const listProduct = async (req, res) => {
 		return res.json({'produto(s)': product});
 
 	} catch (error) {
+
+		if (error.name === 'ValidationError'){
+			return res.status(400).json({ message: error.message });
+		}
+
 		return res.status(500).json({message: error.message});
 	}
 };
