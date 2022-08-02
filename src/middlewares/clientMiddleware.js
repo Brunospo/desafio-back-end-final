@@ -1,76 +1,98 @@
-/* eslint-disable indent */
 const knex = require('../config/knexConnection');
-const { validateClientFields } = require('../schemas/yupClientSchema');
+const { validateClientFields, validateIdtype } = require('../schemas/yupClientSchema');
 
 const validateBodyClient = async (req, res, next) => {
 
-    const { email, cpf } = req.body;
+	const { email, cpf } = req.body;
 
-    try {
-        await validateClientFields.validate({ ...req.body });
+	try {
+		await validateClientFields.validate({ ...req.body });
 
-        const existisEmail = await knex.select('email').from('clientes').where({ email }).first();
-        const existisCPF = await knex.select('cpf').from('clientes').where({ cpf }).first();
+		const existisEmail = await knex.select('email').from('clientes').where({ email }).first();
+		const existisCPF = await knex.select('cpf').from('clientes').where({ cpf }).first();
 
-        if (existisEmail) {
-            return res.status(400).json({ message: 'Email já cadastrado' });
-        }
+		if (existisEmail) {
+			return res.status(400).json({ message: 'Email já cadastrado' });
+		}
 
-        if (existisCPF) {
-            return res.status(400).json({ message: 'CPF já cadastrado' });
-        }
+		if (existisCPF) {
+			return res.status(400).json({ message: 'CPF já cadastrado' });
+		}
 
 
-    } catch (error) {
-        if (error.name === 'ValidationError') {
-            return res.status(400).json({ message: error.message });
-        }
+	} catch (error) {
+		if (error.name === 'ValidationError') {
+			return res.status(400).json({ message: error.message });
+		}
 
-        return res.status(500).json({ message: error.message });
-    }
+		return res.status(500).json({ message: error.message });
+	}
 
-    next();
+	next();
 };
 
-const validateClientID = async (req, res, next) => {
-    const { id } = req.params;
-    const { email, cpf } = req.body;
+const validateId = async (req, res, next) => {
+	const { id } = req.params;
 
-    try {
+	try {
+		await validateIdtype.validate({id});
 
-        if (id) {
-            const client = await knex.select('*').from('clientes').where({ id }).first();
-            req.cliente = client;
+		const existsClient = await knex('clientes').where({id}).first();
+        
+		if (!existsClient) {
+			return res.status(404).json({message: 'Esse cliente não existe'});
+		}
 
-            if (!client) {
-                return res.status(400).json({ message: 'Cliente não encontrado' });
-            }
-        }
+		req.client = existsClient;
 
-        const { email: oldEmail, cpf: oldCPF } = req.cliente;
+	} catch (error) {
 
-        if (email !== oldEmail) {
-            const existisEmail = await knex.select('email').from('clientes').where({ email }).first();
+		if (error.name === 'ValidationError'){
+			return res.status(400).json({ message: error.message });
+		}
 
-            if (existisEmail) {
-                return res.status(400).json({ message: 'Email já cadastrado' });
-            }
-        }
+		return res.status(500).json({ message: error.message });
+	}
 
-        if (cpf !== oldCPF) {
-            const existisCPF = await knex.select('cpf').from('clientes').where({ cpf }).first();
-            if (existisCPF) {
-                return res.status(400).json({ message: 'CPF já cadastrado' });
-            }
-        }
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
+	next();
+};
 
-    next();
+const validateUpdateBody = async (req, res, next) => {
+	const { email, cpf } = req.body;
+	const { email: oldEmail, cpf: oldCPF } = req.client;
+
+	try {
+		await validateClientFields.validate({ ...req.body });
+
+		if (email !== oldEmail) {
+			const existisEmail = await knex.select('email').from('clientes').where({ email }).first();
+
+			if (existisEmail) {
+				return res.status(400).json({ message: 'Email já cadastrado' });
+			}
+		}
+
+		if (cpf !== oldCPF) {
+			const existisCPF = await knex.select('cpf').from('clientes').where({ cpf }).first();
+
+			if (existisCPF) {
+				return res.status(400).json({ message: 'CPF já cadastrado' });
+			}
+		}
+	} catch (error) {
+
+		if (error.name === 'ValidationError') {
+			return res.status(400).json({ message: error.message });
+		}
+
+		return res.status(500).json({ message: error.message });
+	}
+
+	next();
 };
 
 module.exports = {
-    validateBodyClient,
-    validateClientID
+	validateBodyClient,
+	validateUpdateBody,
+	validateId
 };
