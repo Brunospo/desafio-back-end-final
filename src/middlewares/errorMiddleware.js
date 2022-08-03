@@ -6,11 +6,11 @@ const errorMiddleware = (error, req, res, next) => {
 	}
   
 	if(error.name === 'JsonWebTokenError') {
-		return res.status(403).json({message: 'JWT error: ' + error.message});
+		return res.status(401).json({message: 'JWT error: ' + error.message});
 	}
 
 	if(error.name === 'TokenExpiredError') {
-		return res.status(403).json({message: 'JWT error: ' + error.message});
+		return res.status(401).json({message: 'JWT error: ' + error.message});
 	}
 
 	const statusCode = error.statusCode ?? 500;
