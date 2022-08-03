@@ -4,17 +4,13 @@ const registerClient = async (req, res) => {
 
 	const { nome, email, cpf, cep, rua, numero, bairro, cidade, estado } = req.body;
 
-	try {
-		const [client] = await knex('clientes')
-			.insert({ nome, email, cpf, cep, rua, numero, bairro, cidade, estado })
-			.returning('*');
+	const [client] = await knex('clientes')
+		.insert({ nome, email, cpf, cep, rua, numero, bairro, cidade, estado })
+		.returning('*');
 
-		const clientRemovedNullKeys = Object.fromEntries(Object.entries(client).filter(value => value[1] !== null));
+	const clientRemovedNullKeys = Object.fromEntries(Object.entries(client).filter(value => value[1] !== null));
 
-		return res.status(201).json({ cliente: clientRemovedNullKeys });
-	} catch (error) {
-		return res.status(500).json({ message: error.message });
-	}
+	return res.status(201).json({ cliente: clientRemovedNullKeys });
 };
 
 const updateClient = async (req, res) => {
@@ -22,29 +18,20 @@ const updateClient = async (req, res) => {
 	const { nome, email, cpf, cep, rua, numero, bairro, cidade, estado } = req.body;
 	const { id } = req.params;
 
-	try {
-		const [client] = await knex('clientes')
-			.update({ nome, email, cpf, cep, rua, numero, bairro, cidade, estado })
-			.where({ id }).returning('*');
+	const [client] = await knex('clientes')
+		.update({ nome, email, cpf, cep, rua, numero, bairro, cidade, estado })
+		.where({ id }).returning('*');
 
-		const clientRemovedNullKeys = Object.fromEntries(Object.entries(client).filter(value => value[1] !== null));
+	const clientRemovedNullKeys = Object.fromEntries(Object.entries(client).filter(value => value[1] !== null));
 
-		return res.json({ cliente: clientRemovedNullKeys });
-
-	} catch (error) {
-		return res.status(500).json({ message: error.message });
-	}
+	return res.json({ cliente: clientRemovedNullKeys });
 };
 
 const listClient = async (req, res) => {
+	
+	const clients = await knex('clientes');
 
-	try {
-		const clients = await knex('clientes');
-
-		return res.json({ clientes: clients });
-	} catch (error) {
-		return res.status(500).json({ message: error.message });
-	}
+	return res.json({ clientes: clients });
 };
 
 const detailClient = async (req, res) => {

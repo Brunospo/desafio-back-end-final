@@ -9,6 +9,10 @@ const errorMiddleware = (error, req, res, next) => {
 		return res.status(403).json({message: 'JWT error: ' + error.message});
 	}
 
+	if(error.name === 'TokenExpiredError') {
+		return res.status(403).json({message: 'JWT error: ' + error.message});
+	}
+
 	const statusCode = error.statusCode ?? 500;
 	return res.status(statusCode).json({message: error.message});
 };
