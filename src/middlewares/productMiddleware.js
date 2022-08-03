@@ -29,7 +29,23 @@ const validateProductId = async (req, res, next) => {
 	next();
 };
 
+const validateCategoryQuery = async (req, res, next) => {
+	const { categoria_id } = req.query;
+
+	if (categoria_id) {
+		await validateIdtype.validate({id: categoria_id});
+		
+		const existsCategory = await knex('categorias').where({id: categoria_id}).first();
+		if (!existsCategory) {
+			throw new NotFoundError('Essa categoria não existe.');
+		}
+	}
+
+	next();
+};
+
 module.exports = {
 	validateBodyFields,
-	validateProductId
+	validateProductId,
+	validateCategoryQuery
 };

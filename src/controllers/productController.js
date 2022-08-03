@@ -1,6 +1,4 @@
 const knex = require('../config/knexConnection');
-const { validateIdtype } = require('../schemas/yupProductSchema');
-const { NotFoundError } = require('../utils/apiErros');
 
 const registerProduct = async (req, res) => {
 	const { descricao, quantidade_estoque, valor, categoria_id } = req.body;
@@ -20,23 +18,17 @@ const editProduct = async (req, res) => {
 };
 
 const listProduct = async (req, res) => {
-	const { categoria_id: id } = req.query;
+	const { categoria_id } = req.query;
 
 	const querryListProduct = knex('produtos');
 
-	if (id) {
-		await validateIdtype.validate({id});
-			
-		querryListProduct.where({id}).first();
+	if (categoria_id) {			
+		querryListProduct.where({categoria_id});
 	}
 
 	const product = await querryListProduct;
-
-	if (!product) {
-		throw new NotFoundError('Esse produto não existe');
-	}
 		
-	return res.json({'produto(s)': product});
+	return res.json({produtos: product});
 };
 
 const detailProduct = async (req, res) => {
