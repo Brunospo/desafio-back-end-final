@@ -5,11 +5,7 @@ const errorMiddleware = (error, req, res, next) => {
 		return res.status(400).json({ message: error.message });
 	}
   
-	if(error.name === 'JsonWebTokenError') {
-		return res.status(401).json({message: 'JWT error: ' + error.message});
-	}
-
-	if(error.name === 'TokenExpiredError') {
+	if(error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
 		return res.status(401).json({message: 'JWT error: ' + error.message});
 	}
 
