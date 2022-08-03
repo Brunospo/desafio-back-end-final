@@ -1,25 +1,18 @@
 const knex = require('../config/knexConnection');
 const { isCorrectPassword } = require('../utils/bcrypt');
+const { BadRequestError } = require('../utils/apiErros');
 
 const { validateUserFields, validateEditPasswordFields } = require('../schemas/yupUserSchema');
 
 const validateBodyRegister = async (req, res, next) => {
 	const { email } = req.body;
 
-	try {
-		await validateUserFields.validate({ ...req.body });
+	await validateUserFields.validate({ ...req.body });
 
-		const existisEmail = await knex.select('email').from('usuarios').where({ email }).first();
+	const existisEmail = await knex.select('email').from('usuarios').where({ email }).first();
 
-		if (existisEmail) {
-			return res.status(400).json({ message: 'Email já cadastrado' });
-		}
-	} catch (error) {
-		if (error.name === 'ValidationError') {
-			return res.status(400).json({ message: error.message });
-		}
-
-		return res.status(500).json({ message: error.message });
+	if (existisEmail) {
+		throw new BadRequestError('Email já cadastrado');
 	}
 
 	next();
@@ -28,27 +21,18 @@ const validateBodyRegister = async (req, res, next) => {
 const validateBodyEditPassword = async (req, res, next) => {
 	const { email, senha_antiga } = req.body;
 
-	try {
-		await validateEditPasswordFields.validate({ ...req.body });
+	await validateEditPasswordFields.validate({ ...req.body });
 
-		const user = await knex.select('email', 'senha').from('usuarios').where({ email }).first();
+	const user = await knex.select('email', 'senha').from('usuarios').where({ email }).first();
 
-		if (!user) {
-			return res.status(400).json({ message: 'Email e/ou senha inválido(s).' });
-		}
+	if (!user) {
+		throw new BadRequestError('Email e/ou senha inválido(s).');
+	}
 
-		const correctOldPassword = await isCorrectPassword(senha_antiga, user.senha);
+	const correctOldPassword = await isCorrectPassword(senha_antiga, user.senha);
 
-		if (!correctOldPassword) {
-			return res.status(400).json({ message: 'Email e/ou senha inválido(s).' });
-		}
-
-	} catch (error) {
-		if (error.name === 'ValidationError') {
-			return res.status(400).json({ message: error.message });
-		}
-
-		return res.status(500).json({ message: error.message });
+	if (!correctOldPassword) {
+		throw new BadRequestError('Email e/ou senha inválido(s).');
 	}
 
 	next();
@@ -58,22 +42,14 @@ const validateBodyUpdate = async (req, res, next) => {
 	const { email } = req.body;
 	const { email: oldEmail } = req.usuario;
 
-	try {
-		await validateUserFields.validate({ ...req.body });
+	await validateUserFields.validate({ ...req.body });
 
-		if (email !== oldEmail) {
-			const existisEmail = await knex.select('email').from('usuarios').where({ email }).first();
+	if (email !== oldEmail) {
+		const existisEmail = await knex.select('email').from('usuarios').where({ email }).first();
 
-			if (existisEmail) {
-				return res.status(400).json({ message: 'Email já cadastrado' });
-			}
+		if (existisEmail) {
+			throw new BadRequestError('Email já cadastrado');
 		}
-	} catch (error) {
-		if (error.name === 'ValidationError') {
-			return res.status(400).json({ message: error.message });
-		}
-
-		return res.status(500).json({ message: error.message });
 	}
 
 	next();
