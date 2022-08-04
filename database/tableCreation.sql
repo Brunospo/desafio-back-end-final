@@ -42,3 +42,22 @@ CREATE TABLE clientes(
   cidade TEXT,
   estado CHAR(2)
 );
+
+DROP TABLE IF EXISTS pedidos;
+
+CREATE TABLE pedidos(
+	id SERIAL PRIMARY KEY,
+  cliente_id INTEGER REFERENCES clientes(id) NOT NULL,
+  observacao TEXT,
+  valor_total INTEGER
+);
+
+DROP TABLE IF EXISTS pedido_produtos;
+
+CREATE TABLE pedido_produtos(
+	id SERIAL PRIMARY KEY,
+  pedido_id INTEGER REFERENCES pedidos(id) NOT NULL,
+  produto_id INTEGER REFERENCES produtos(id) NOT NULL,
+  quantidade_produto INTEGER NOT NULL,
+  valor_produto INTEGER
+);
