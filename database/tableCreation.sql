@@ -61,3 +61,5 @@ CREATE TABLE pedido_produtos(
   quantidade_produto INTEGER NOT NULL,
   valor_produto INTEGER
 );
+
+ALTER TABLE IF EXISTS produtos ADD COLUMN IF NOT EXISTS url_produto TEXT;
