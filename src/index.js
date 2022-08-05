@@ -9,6 +9,7 @@ const userRouter = require('./router/userRouter');
 const authenticationRouter = require('./router/authenticationRouter');
 const productRouter = require('./router/productRouter');
 const clientRouter = require('./router/clientRouter');
+const orderRouter = require('./router/orderRouter');
 
 const { errorMiddleware } = require('./middlewares/errorMiddleware');
 
@@ -22,6 +23,7 @@ app.use('/usuario', userRouter);
 app.use('/login', authenticationRouter);
 app.use('/produto', productRouter);
 app.use('/cliente', clientRouter);
+app.use('/pedido', orderRouter);
 
 //Catch all
 app.use(errorMiddleware);
