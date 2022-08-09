@@ -48,14 +48,14 @@ const listOrders = async (req, res) => {
 
 		const currentOrderProductElement = {id: element.id, quantidade_produto: element.quantidade_produto, valor_produto: element.valor_produto, pedido_id: element.pedido_id, produto_id: element.produto_id};
 		
-		const currentOrderElement = {produto: {id: element.pedido_id, valor_total: element.valor_total, observacao: element.observacao, cliente_id: element.cliente_id}, pedido_produtos:[currentOrderProductElement]};
+		const currentOrderElement = {pedido: {id: element.pedido_id, valor_total: element.valor_total, observacao: element.observacao, cliente_id: element.cliente_id}, pedido_produtos:[currentOrderProductElement]};
 	
 		if (result.length === 0) {
 			result.push(currentOrderElement);
 			return;
 		}
 
-		const registeredElement = result.find(elementF => elementF.produto.id === element.pedido_id);
+		const registeredElement = result.find(elementF => elementF.pedido.id === element.pedido_id);
 
 		if (!registeredElement) {
 			result.push(currentOrderElement);

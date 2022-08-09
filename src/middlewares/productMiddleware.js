@@ -1,6 +1,6 @@
 const { validateRegisterFields, validateIdtype } = require('../schemas/yupProductSchema');
 const knex = require('../config/knexConnection');
-const { NotFoundError } = require('../utils/apiErros');
+const { NotFoundError, BadRequestError } = require('../utils/apiErros');
 
 const validateBodyFields = async (req, res, next) => {
 	const { descricao, quantidade_estoque, valor, categoria_id } = req.body;
@@ -44,8 +44,22 @@ const validateCategoryQuery = async (req, res, next) => {
 	next();
 };
 
+const validateIfHasProductInOrder = async (req, res, next) => {
+
+	const { id } = req.params;
+
+	const existsProduct = await knex('pedido_produtos').where({ produto_id: id }).first();
+
+	if (existsProduct) {
+		throw new BadRequestError('Esse produto não pode ser deletado, pois está associado a um pedido.');
+	}
+
+	next();
+};
+
 module.exports = {
 	validateBodyFields,
 	validateProductId,
-	validateCategoryQuery
+	validateCategoryQuery,
+	validateIfHasProductInOrder
 };

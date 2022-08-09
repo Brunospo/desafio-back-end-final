@@ -19,11 +19,11 @@ const validateBodyRegister = async (req, res, next) => {
 		const product = await knex.select('quantidade_estoque', 'valor', 'descricao').from('produtos').where({id: order.produto_id}).first();
 		
 		if (!product) {
-			throw new NotFoundError(`Problema no produto ${index + 1}: Não existe produto cadastrado para o produto_id informado`);
+			throw new NotFoundError(`Problema no pedido_produtos[${index}]: Não existe produto cadastrado para o produto_id informado`);
 		}
 
 		if (order.quantidade_produto > product.quantidade_estoque) {
-			throw new BadRequestError(`Problema no produto ${index + 1}: quantidade_produto é maior que a quantidade em estoque`);
+			throw new BadRequestError(`Problema no pedido_produtos[${index}]: quantidade_produto é maior que a quantidade em estoque(${product.quantidade_estoque} unidades)`);
 		}
 		
 		totalValue += (order.quantidade_produto * product.valor);
