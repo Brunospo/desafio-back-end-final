@@ -5,6 +5,7 @@ const { NotFoundError, BadRequestError } = require('../utils/apiErros');
 const validateBodyRegister = async (req, res, next) => {
 	const { cliente_id, pedido_produtos } = req.body;
 	const productData = [];
+	let totalValue = 0;
 
 	await validateOrderFields.validate({cliente_id, pedido_produtos});
 
@@ -24,11 +25,12 @@ const validateBodyRegister = async (req, res, next) => {
 		if (order.quantidade_produto > product.quantidade_estoque) {
 			throw new BadRequestError(`Problema no produto ${index + 1}: quantidade_produto é maior que a quantidade em estoque`);
 		}
-
+		
+		totalValue += (order.quantidade_produto * product.valor);
 		productData.push({value: product.valor, description: product.descricao, stock: product.quantidade_estoque});
 	}
 
-	req.productData = productData;
+	req.productData = {productData, totalValue};
 
 	next();
 };
