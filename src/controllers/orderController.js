@@ -32,6 +32,43 @@ const registerOrder = async (req, res) => {
 	});
 };
 
+const listOrders = async (req, res) => {
+	const { cliente_id } = req.query;
+
+	const query = knex('pedidos').join('pedido_produtos', 'pedidos.id', '=', 'pedido_produtos.pedido_id');
+	const result = [];
+
+	if (cliente_id) {
+		query.where('pedidos.cliente_id', cliente_id);
+	}
+
+	const order = await query;
+
+	order.forEach((element) => {
+
+		const currentOrderProductElement = {id: element.id, quantidade_produto: element.quantidade_produto, valor_produto: element.valor_produto, pedido_id: element.pedido_id, produto_id: element.produto_id};
+		
+		const currentOrderElement = {produto: {id: element.pedido_id, valor_total: element.valor_total, observacao: element.observacao, cliente_id: element.cliente_id}, pedido_produtos:[currentOrderProductElement]};
+	
+		if (result.length === 0) {
+			result.push(currentOrderElement);
+			return;
+		}
+
+		const registeredElement = result.find(elementF => elementF.produto.id === element.pedido_id);
+
+		if (!registeredElement) {
+			result.push(currentOrderElement);
+			return;
+		} else {
+			registeredElement.pedido_produtos.push(currentOrderProductElement);
+		}
+	});
+
+	return res.json(result);
+};
+
 module.exports = {
-	registerOrder
+	registerOrder,
+	listOrders
 };

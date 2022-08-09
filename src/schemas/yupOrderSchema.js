@@ -9,6 +9,11 @@ const validateOrderFields = yup.object().shape({
 	})).min(1, 'pedido_produtos deve ter pelo menos 1 item')
 });
 
+const validateQueryId = yup.object().shape({
+	cliente_id: yup.number().integer('cliente_id deve receber um número inteiro').positive()
+});
+
 module.exports = {
-	validateOrderFields
+	validateOrderFields,
+	validateQueryId
 };

@@ -1,4 +1,4 @@
-const { validateOrderFields } = require('../schemas/yupOrderSchema');
+const { validateOrderFields, validateQueryId } = require('../schemas/yupOrderSchema');
 const knex = require('../config/knexConnection');
 const { NotFoundError, BadRequestError } = require('../utils/apiErros');
 
@@ -35,6 +35,23 @@ const validateBodyRegister = async (req, res, next) => {
 	next();
 };
 
+const validateQueryParam = async (req, res, next) => {
+	const { cliente_id } = req.query;
+
+	if (cliente_id) {
+		await validateQueryId.validate({cliente_id});
+
+		const existsClient = await knex('clientes').where({id: cliente_id}).first();
+		
+		if (!existsClient) {
+			throw new NotFoundError('Não existe cliente para o cliente_id informado');
+		}
+	}
+
+	next();
+};
+
 module.exports = {
-	validateBodyRegister
+	validateBodyRegister,
+	validateQueryParam
 };
