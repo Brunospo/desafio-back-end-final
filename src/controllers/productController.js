@@ -11,8 +11,13 @@ const registerProduct = async (req, res) => {
 const editProduct = async (req, res) => {
 	const { id } = req.params;
 	const { descricao, quantidade_estoque, valor, categoria_id } = req.body;
+	let { produto_imagem } = req.body;
 
-	const [ updatedProduct ] = await knex('produtos').update({ descricao, quantidade_estoque, valor, categoria_id }).where({id}).returning('*');
+	if (!produto_imagem) {
+		produto_imagem = null;
+	}
+
+	const [ updatedProduct ] = await knex('produtos').update({ descricao, quantidade_estoque, valor, categoria_id, produto_imagem }).where({id}).returning('*');
 		
 	return res.json({produto: updatedProduct});		
 };

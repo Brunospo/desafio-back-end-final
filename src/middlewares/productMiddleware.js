@@ -1,6 +1,7 @@
 const { validateRegisterFields, validateIdtype } = require('../schemas/yupProductSchema');
 const knex = require('../config/knexConnection');
 const { NotFoundError, BadRequestError } = require('../utils/apiErros');
+const supabase = require('../config/supabase');
 
 const validateBodyFields = async (req, res, next) => {
 	const { descricao, quantidade_estoque, valor, categoria_id, produto_imagem } = req.body;
@@ -26,6 +27,7 @@ const validateProductId = async (req, res, next) => {
 		throw new NotFoundError('Esse produto não existe');
 	}
 
+	req.productImgUrl = existsProduct.produto_imagem;
 	next();
 };
 
@@ -57,9 +59,30 @@ const validateIfHasProductInOrder = async (req, res, next) => {
 	next();
 };
 
+const verifyIfHasImg = async (req, res, next) => {
+	const hasImg = req.productImgUrl;
+	const { produto_imagem } = req.body;
+
+	if (hasImg || (hasImg && !produto_imagem)) {
+		const imgName = hasImg.slice(81);
+		
+		const { error } = await supabase
+			.storage
+			.from(process.env.SUPABASE_BUCKET) //eslint-disable-line
+			.remove([imgName]);
+
+		if (error) {
+			throw new BadRequestError('Não foi possivel atualizar o produto_imagem');
+		}
+	}
+
+	next();
+};
+
 module.exports = {
 	validateBodyFields,
 	validateProductId,
 	validateCategoryQuery,
-	validateIfHasProductInOrder
+	validateIfHasProductInOrder,
+	verifyIfHasImg
 };
