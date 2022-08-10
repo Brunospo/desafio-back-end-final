@@ -4,11 +4,11 @@ const { BadRequestError } = require('../utils/apiErros');
 
 const uploadImage = async (req, res) => {
 
-    const { url_produto, nome } = req.body;
+    const { imagem, nome } = req.body;
 
     const name = `${nome}${Date.now()}`;
 
-    const buffer = Buffer.from(url_produto, 'base64');
+    const buffer = Buffer.from(imagem, 'base64');
 
     const { error } = await supabase
         .storage

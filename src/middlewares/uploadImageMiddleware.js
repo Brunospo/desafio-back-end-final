@@ -5,12 +5,12 @@ const isBase64 = require('is-base64');
 
 const validateImage = async (req, res, next) => {
 
-    const { url_produto, nome } = req.body;
+    const { imagem, nome } = req.body;
 
-    await validateImageBody.validate({ url_produto, nome });
+    await validateImageBody.validate({ imagem, nome });
 
-    if (!isBase64(url_produto)) {
-        throw new BadRequestError('url_produto deve está no formato base64');
+    if (!isBase64(imagem)) {
+        throw new BadRequestError('imagem deve está no formato base64');
     }
 
     next();
