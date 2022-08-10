@@ -1,33 +1,30 @@
-/* eslint-disable indent */
-const supabase = require('../utils/supabase');
+/* eslint-disable no-undef */
+const supabase = require('../config/supabase');
 const { BadRequestError } = require('../utils/apiErros');
 
 const uploadImage = async (req, res) => {
 
-    const { imagem } = req.body;
+	const { imagem } = req.body;
 
-    const name = `${Date.now()}.jpg`;
+	const buffer = Buffer.from(imagem, 'base64');
 
-    const buffer = Buffer.from(imagem, 'base64');
+	const { data, error } = await supabase
+		.storage
+		.from(process.env.SUPABASE_BUCKET)
+		.upload(`${Date.now()}.jpg`, buffer, {
+			contentType: 'image/jpg'
+		});
 
-    const { error } = await supabase
-        .storage
-        .from('uploadarquivos')
-        .upload(name, buffer);
+	if (error) {
+		throw new BadRequestError(error);
+	}
 
-    const { publicURL } = supabase
-        .storage
-        .from('uploadarquivos')
-        .getPublicUrl(`${name}`);
+	const imgURL = `${process.env.SUPABASE_STORAGE_URL}${data.Key}`;
 
-    if (error) {
-        throw new BadRequestError(error);
-    }
-
-    return res.status(201).json({ publicURL });
+	return res.status(201).json({ imgURL });
 
 };
 
 module.exports = {
-    uploadImage
+	uploadImage
 };
