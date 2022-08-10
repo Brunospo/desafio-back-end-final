@@ -3,9 +3,9 @@ const knex = require('../config/knexConnection');
 const { NotFoundError, BadRequestError } = require('../utils/apiErros');
 
 const validateBodyFields = async (req, res, next) => {
-	const { descricao, quantidade_estoque, valor, categoria_id } = req.body;
+	const { descricao, quantidade_estoque, valor, categoria_id, produto_imagem } = req.body;
 
-	await validateRegisterFields.validate({ descricao, quantidade_estoque, valor, categoria_id });
+	await validateRegisterFields.validate({ descricao, quantidade_estoque, valor, categoria_id, produto_imagem });	
 
 	const existsCategory = await knex('categorias').where({id: categoria_id}).first();
 	if (!existsCategory) {

@@ -62,4 +62,4 @@ CREATE TABLE pedido_produtos(
   valor_produto INTEGER
 );
 
-ALTER TABLE IF EXISTS produtos ADD COLUMN IF NOT EXISTS url_produto TEXT;
+ALTER TABLE IF EXISTS produtos ADD COLUMN IF NOT EXISTS produto_imagem TEXT;
