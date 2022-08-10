@@ -4,9 +4,9 @@ const { BadRequestError } = require('../utils/apiErros');
 
 const uploadImage = async (req, res) => {
 
-    const { imagem, nome } = req.body;
+    const { imagem } = req.body;
 
-    const name = `${nome}${Date.now()}`;
+    const name = `${Date.now()}.jpg`;
 
     const buffer = Buffer.from(imagem, 'base64');
 
