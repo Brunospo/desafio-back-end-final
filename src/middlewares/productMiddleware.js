@@ -59,7 +59,7 @@ const validateIfHasProductInOrder = async (req, res, next) => {
 	next();
 };
 
-const verifyIfHasImg = async (req, res, next) => {
+const deleteSupabaseImgIfExists = async (req, res, next) => {
 	const hasImg = req.productImgUrl;
 	const { produto_imagem } = req.body;
 
@@ -72,7 +72,7 @@ const verifyIfHasImg = async (req, res, next) => {
 			.remove([imgName]);
 
 		if (error) {
-			throw new BadRequestError('Não foi possivel atualizar o produto_imagem');
+			throw new BadRequestError('Não foi possivel deletar o produto_imagem no servidor de armazenamento de imagens');
 		}
 	}
 
@@ -84,5 +84,5 @@ module.exports = {
 	validateProductId,
 	validateCategoryQuery,
 	validateIfHasProductInOrder,
-	verifyIfHasImg
+	deleteSupabaseImgIfExists
 };
