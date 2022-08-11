@@ -1,7 +1,12 @@
 const knex = require('../config/knexConnection');
 
 const registerProduct = async (req, res) => {
-	const { descricao, quantidade_estoque, valor, categoria_id, produto_imagem } = req.body;
+	const { descricao, quantidade_estoque, valor, categoria_id } = req.body;
+	let { produto_imagem } = req.body;
+
+	if (!produto_imagem) {
+		produto_imagem = null;
+	}
 
 	const [ product ] = await knex('produtos').insert({ descricao, quantidade_estoque, valor, categoria_id, produto_imagem }).returning('*');
 		
