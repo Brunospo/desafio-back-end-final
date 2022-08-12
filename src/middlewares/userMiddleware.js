@@ -19,7 +19,7 @@ const validateBodyRegister = async (req, res, next) => {
 };
 
 const validateBodyEditPassword = async (req, res, next) => {
-	const { email, senha_antiga } = req.body;
+	const { email, senha_antiga, senha_nova } = req.body;
 
 	await validateEditPasswordFields.validate({ ...req.body });
 
@@ -33,6 +33,10 @@ const validateBodyEditPassword = async (req, res, next) => {
 
 	if (!correctOldPassword) {
 		throw new BadRequestError('Email e/ou senha inválido(s).');
+	}
+
+	if (correctOldPassword && (senha_antiga === senha_nova)) {
+		throw new BadRequestError('A nova senha deve ser diferente da senha antiga.');
 	}
 
 	next();
